@@ -26,7 +26,7 @@
             # Transport settings for HTTPS upstreams
             transport http {
                 tls
-                tls_server_name public.api.megausd.money
+                tls_server_name {$PROXY_HOST}
             }
         }
 
