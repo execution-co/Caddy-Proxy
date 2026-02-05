@@ -16,20 +16,21 @@
 
     # Main proxy configuration
     handle {
-        reverse_proxy https://public.api.megausd.money:443 {
-            # Header management - hardcoded for debugging
-            header_up Host public.api.megausd.money
-            header_up X-Real-IP {remote_host}
+        reverse_proxy {$PROXY_TARGET} {
+            header_up Host {$PROXY_HOST}
             header_up X-Forwarded-Proto https
+            header_up User-Agent "Mozilla/5.0"
 
             # Remove headers that might interfere
             header_up -X-Forwarded-For
             header_up -X-Forwarded-Host
+            header_up -X-Real-IP
 
-            # Transport settings for HTTPS upstreams
+            # Transport settings for HTTPS upstreams with HTTP/2
             transport http {
                 tls
-                tls_server_name public.api.megausd.money
+                tls_server_name {$PROXY_HOST}
+                versions 1.1 2
             }
         }
 
