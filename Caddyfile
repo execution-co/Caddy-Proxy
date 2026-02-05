@@ -18,19 +18,10 @@
     handle {
         reverse_proxy {$PROXY_TARGET} {
             # Header management
-            # Use PROXY_HOST env var if set, otherwise extract from upstream URL
             header_up Host {$PROXY_HOST:{upstream_hostport}}
             header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
             # Hardcode https since Railway terminates TLS at edge (container sees http)
             header_up X-Forwarded-Proto https
-            header_up X-Forwarded-Host {host}
-
-            # WebSocket support
-            @websocket {
-                header Connection *Upgrade*
-                header Upgrade websocket
-            }
 
             # Transport settings for HTTPS upstreams
             transport http {
