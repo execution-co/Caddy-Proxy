@@ -16,17 +16,20 @@
 
     # Main proxy configuration
     handle {
-        reverse_proxy {$PROXY_TARGET} {
-            # Header management
-            header_up Host {$PROXY_HOST:{upstream_hostport}}
+        reverse_proxy https://public.api.megausd.money:443 {
+            # Header management - hardcoded for debugging
+            header_up Host public.api.megausd.money
             header_up X-Real-IP {remote_host}
-            # Hardcode https since Railway terminates TLS at edge (container sees http)
             header_up X-Forwarded-Proto https
+
+            # Remove headers that might interfere
+            header_up -X-Forwarded-For
+            header_up -X-Forwarded-Host
 
             # Transport settings for HTTPS upstreams
             transport http {
                 tls
-                tls_server_name {$PROXY_HOST}
+                tls_server_name public.api.megausd.money
             }
         }
 
